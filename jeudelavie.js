@@ -68,6 +68,111 @@ function drawLine(context, x1, y1, x2, y2) {
         ctx.fillText("x = " + e.clientX + ", y = " + e.clientY, cvs.width/2, cvs.height/2);
     });
     */
+
+
+
+
+
+
+    /*
+   function clickableGrid( rows, cols, callback ){
+    var i=0;
+    var grid = document.createElement('table');
+    grid.className = 'grid';
+    for (var r=0;r<rows;++r){
+      var tr = grid.appendChild(document.createElement('tr'));
+      for (var c=0;c<cols;++c){
+        var cell = tr.appendChild(document.createElement('td'));
+        cell.innerHTML = ++i;
+        cell.addEventListener('click',(function(el,r,c,i){
+          return function(){ callback(el,r,c,i); }
+         })(cell,r,c,i),false);
+      }
+    }
+    return grid;
+  }
+  */
+
+
+/*
+ function changeColor(evt){
+  var clickedOn = evt.target;
+  // for HTML
+  clickedOn.style.backgroundColor = '#f00';
+
+  // for SVG
+  clickedOn.setAttribute('fill','red');
+}
+mySquare.addEventListener('click',changeColor,false);
+
+*/
+
+
+
+const drawGrid = (ctx, tileSize, highlightNum) => {
+  for (let y = 0; y < cvs.width / tileSize; y++) {
+    for (let x = 0; x < cvs.height / tileSize; x++) {
+      const parity = (x + y) % 2;
+      const tileNum = x + cvs.width / tileSize * y;
+      const xx = x * tileSize;
+      const yy = y * tileSize;
+
+      if (tileNum === highlightNum) {
+        ctx.fillStyle = "#A0A0A0";
+      }
+      else {
+        ctx.fillStyle = parity ? "#fff" : "#fff";
+      }
+      
+      ctx.fillRect(xx, yy, tileSize, tileSize);
+      //ctx.fillStyle = parity ? "#fff" : "#000";
+    }
+  }
+};
+
+const size = 25;
+const ctx = cvs.getContext("2d");
+const tileSize = cvs.width / size;
+const status = document.createElement("pre");
+let lastTile = -1;
+
+drawGrid(ctx, tileSize);
+document.body.style.display = "flex";
+document.body.style.alignItems = "flex-start";
+
+cvs.addEventListener("mousemove", evt => {
+  event.target.style.cursor = "pointer";
+  const tileX = ~~(evt.offsetX / tileSize);
+  const tileY = ~~(evt.offsetY / tileSize);
+  const tileNum = tileX + cvs.width / tileSize * tileY;
+  
+  if (tileNum !== lastTile) {
+    lastTile = tileNum;
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    drawGrid(ctx, tileSize, tileNum);
+  }
+  
+  status.innerText = `  mouse coords: {${evt.offsetX}, ${evt.offsetX}}
+  tile coords : {${tileX}, ${tileY}}
+  tile number : ${tileNum}`;
+});
+
+cvs.addEventListener("click", event => {
+  status.innerText += "\n  [clicked]";
+});
+
+/*
+canvas.addEventListener("mouseout", event => {
+  drawGrid(canvas, ctx, tileSize);
+  status.innerText = "";
+  lastTile = -1;
+});
+*/
+
+
+
+
+    /*
     var rect = cvs.getBoundingClientRect();
     var ctx = cvs.getContext("2d");
     let isDrawing = true;
@@ -97,6 +202,81 @@ function drawLine(context, x1, y1, x2, y2) {
         context.stroke();
         context.closePath();
     }
+    */
 
+
+
+
+
+
+
+
+
+    /*
+    const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
+  for (let y = 0; y < canvas.width / tileSize; y++) {
+    for (let x = 0; x < canvas.height / tileSize; x++) {
+      const parity = (x + y) % 2;
+      const tileNum = x + canvas.width / tileSize * y;
+      const xx = x * tileSize;
+      const yy = y * tileSize;
+
+      if (tileNum === highlightNum) {
+        ctx.fillStyle = "#f0f";
+      }
+      else {
+        ctx.fillStyle = parity ? "#555" : "#ddd";
+      }
+      
+      ctx.fillRect(xx, yy, tileSize, tileSize);
+      ctx.fillStyle = parity ? "#fff" : "#000";
+      ctx.fillText(tileNum, xx, yy);
+    }
+  }
+};
+
+const size = 10;
+const canvas = document.createElement("canvas");
+canvas.width = canvas.height = 200;
+const ctx = canvas.getContext("2d");
+ctx.font = "11px courier";
+ctx.textBaseline = "top";
+const tileSize = canvas.width / size;
+const status = document.createElement("pre");
+let lastTile = -1;
+
+drawGrid(canvas, ctx, tileSize);
+document.body.style.display = "flex";
+document.body.style.alignItems = "flex-start";
+document.body.appendChild(canvas);
+document.body.appendChild(status);
+
+canvas.addEventListener("mousemove", evt => {
+  event.target.style.cursor = "pointer";
+  const tileX = ~~(evt.offsetX / tileSize);
+  const tileY = ~~(evt.offsetY / tileSize);
+  const tileNum = tileX + canvas.width / tileSize * tileY;
+  
+  if (tileNum !== lastTile) {
+    lastTile = tileNum;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid(canvas, ctx, tileSize, tileNum);
+  }
+  
+  status.innerText = `  mouse coords: {${evt.offsetX}, ${evt.offsetX}}
+  tile coords : {${tileX}, ${tileY}}
+  tile number : ${tileNum}`;
+});
+
+canvas.addEventListener("click", event => {
+  status.innerText += "\n  [clicked]";
+});
+
+canvas.addEventListener("mouseout", event => {
+  drawGrid(canvas, ctx, tileSize);
+  status.innerText = "";
+  lastTile = -1;
+});
+*/
 
 });
