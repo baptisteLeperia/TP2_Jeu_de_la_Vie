@@ -107,9 +107,26 @@ mySquare.addEventListener('click',changeColor,false);
 
 */
 
+const tab_transformation_25 = (tab) => {
+  for (let i=0 ; i<25*25; i++){
+    if (tab[i]==0){
+      if (tab[i-1]+tab[i+1]+tab[i+24]+tab[i+25]+tab[i+26]+tab[i-24]+tab[i-25]+tab[i-26]==3){
+        tab[i]=1;
+      }
+    }else{
+      if (tab[i-1]+tab[i+1]+tab[i+24]+tab[i+25]+tab[i+26]+tab[i-24]+tab[i-25]+tab[i-26]==3 || tab[i-1]+tab[i+1]+tab[i+24]+tab[i+25]+tab[i+26]+tab[i-24]+tab[i-25]+tab[i-26]==2){
+        tab[i]=1;
+      }else{
+        tab[i]=0;
+      }
+    }
+  }
+};
 
 
-const drawGrid = (ctx, tileSize, highlightNum) => {
+
+
+const drawGrid = (ctx, tileSize, highlightNum, tab) => {
   for (let y = 0; y < cvs.width / tileSize; y++) {
     for (let x = 0; x < cvs.height / tileSize; x++) {
       const parity = (x + y) % 2;
@@ -123,6 +140,18 @@ const drawGrid = (ctx, tileSize, highlightNum) => {
       else {
         ctx.fillStyle = parity ? "#fff" : "#fff";
       }
+      /*
+      for (let i = 0 ;i<tab.length ; i++){
+        if (tileNum == tab[i]){
+          ctx.fillStyle ="#000";
+        }
+      }
+      */
+      
+      if (tab[tileNum]==1){
+        ctx.fillStyle="#000";
+      }
+      
       
       ctx.fillRect(xx, yy, tileSize, tileSize);
       //ctx.fillStyle = parity ? "#fff" : "#000";
@@ -130,13 +159,21 @@ const drawGrid = (ctx, tileSize, highlightNum) => {
   }
 };
 
+var tab = [];
+
+var tab2 = new Array(25*25);
+
+for (let i = 0 ;i<25*25 ; i++){
+  tab2[i]=0;
+}
+
 const size = 25;
 const ctx = cvs.getContext("2d");
 const tileSize = cvs.width / size;
 const status = document.createElement("pre");
 let lastTile = -1;
 
-drawGrid(ctx, tileSize);
+drawGrid(ctx, tileSize, -1, tab2);
 document.body.style.display = "flex";
 document.body.style.alignItems = "flex-start";
 
@@ -149,7 +186,7 @@ cvs.addEventListener("mousemove", evt => {
   if (tileNum !== lastTile) {
     lastTile = tileNum;
     ctx.clearRect(0, 0, cvs.width, cvs.height);
-    drawGrid(ctx, tileSize, tileNum);
+    drawGrid(ctx, tileSize, tileNum, tab);
   }
   
   status.innerText = `  mouse coords: {${evt.offsetX}, ${evt.offsetX}}
@@ -159,6 +196,34 @@ cvs.addEventListener("mousemove", evt => {
 
 cvs.addEventListener("click", event => {
   status.innerText += "\n  [clicked]";
+  const tileX = ~~(event.offsetX / tileSize);
+  const tileY = ~~(event.offsetY / tileSize);
+  const tileNum = tileX + cvs.width / tileSize * tileY;
+  var b=false;
+  console.log(tileNum);
+  /*
+  for (let i=0; i<tab.length; i++){
+    if (tileNum==tab[i]){
+      tab[i]=-1;
+      b=true;
+    }
+  }
+  */
+  
+  if (tab2[tileNum]==1){
+    tab2[tileNum]==0;
+  }else{
+    tab2[tileNum]==1;
+  }
+  
+
+  if (b==false){
+    tab.push(tileNum);
+  }
+  tab.forEach(function(x){
+    console.log(x)
+  });
+  drawGrid(ctx, tileSize, -1, tab2);
 });
 
 /*
